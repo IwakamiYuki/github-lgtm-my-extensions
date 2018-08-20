@@ -8,9 +8,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
 		case 'set_name':
 			setName(request.name);
 			chrome.storage.local.set({'is_login_proc': false});
-			// TODO: アイコンをアクティブにする
-
-			//
 			generateLgtmUrl();
 			break;
 		case 'generate_lgtm':
@@ -28,11 +25,16 @@ var name = '';
 var lgtm = '';
 
 chrome.storage.local.get(['name', 'lgtm'], function(value) {
-	name = value.name;
-	lgtm = value.lgtm;
+	if (value.name) {
+		name = value.name;
+	}
+	if (value.lgtm) {
+		lgtm = value.lgtm;
+	}
 	if (!value.name) {
 		setIcon(false);
 	}
+	generateLgtmUrl();
 });
 
 var setIcon = function(isOk) {
@@ -57,7 +59,7 @@ var generateLgtmUrl = function() {
 	if (name) {
 		url = 'https://lgtm.in/g/' + name;
 	} else {
-		url = 'https://lgtm.in/g/';
+		url = 'https://lgtm.in/g';
 	}
 	const request = new XMLHttpRequest();
 	request.open('GET', url);
